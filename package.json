@@ -1,0 +1,26 @@
+{
+  "name": "demoji-backend",
+  "version": "0.0.1",
+  "description": "backend for demoji app",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcbartlett25/demoji-backend.git"
+  },
+  "dependencies": {
+    "express": "^4.0.0"
+  },
+  "keywords": [
+    "emojis",
+    "emotions"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jcbartlett25/demoji-backend/issues"
+  },
+  "homepage": "https://github.com/jcbartlett25/demoji-backend#readme"
+}

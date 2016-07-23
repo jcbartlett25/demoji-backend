@@ -2,12 +2,12 @@ module.exports = function (grunt) {
   grunt.initConfig({
     execute: {
       target: {
-        src: ['app.js']
+        src: ['server.js']
       }
     },
     watch: {
       scripts: {
-        files: ['app.js'],
+        files: ['server.js'],
         tasks: ['execute'],
       },
     }

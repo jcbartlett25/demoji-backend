@@ -1,17 +1,22 @@
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'me',
-  password : 'secret',
-  database : 'my_db'
+// First you need to create a connection to the db
+var demoji_db = mysql.createConnection({
+  host     : '159.203.240.126',
+  user     : 'remote',
+  password : 'hack2040',
+  database : 'sys'
 });
 
-connection.connect();
-
-connection.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
-  if (err) throw err;
-
-  console.log('The solution is: ', rows[0].solution);
+demoji_db .connect(function(err){
+  if(err){
+    console.log('Error connecting to Db');
+    return;
+  }
+  console.log('Connection established we got db up');
 });
 
-connection.end();
+demoji_db.end(function(err) {
+  // The connection is terminated gracefully
+  // Ensures all previously enqueued queries are still
+  // before sending a COM_QUIT packet to the MySQL server.
+});

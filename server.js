@@ -11,7 +11,7 @@ app.get('/', function(req, res) {
 
 
 //db.showColumns();
-db.getRelevantPicData('1', "'male'", "'happy'");
+//db.getRelevantPicData('5');
 
 
 /** bodyParser.urlencoded(options)
@@ -96,9 +96,13 @@ app.get('/getRelevantPicData', function (req, res) {
 
     if (picId) {
 
-        db.getRelevantPicData(picId);
-        res.send(true);
-        res.end();
+        db.getRelevantPicData(picId, function(data) {
+            console.log(data);
+            res.send(data);
+            res.end(); 
+        });
+
+        
     }
     else {
 

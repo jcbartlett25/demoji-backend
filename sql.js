@@ -1,3 +1,5 @@
+var exports = module.exports = {};
+
 var mysql      = require('mysql');
 // First you need to create a connection to the db
 var demoji_db = mysql.createConnection({
@@ -18,7 +20,7 @@ demoji_db.connect(function(err){
 */
 
 
-var showColumns = function(){
+exports.showColumns = function(){
   demoji_db.query('SHOW COLUMNS FROM pictures', function(err, rows, fields){ 
     
     for(var i=0; i<rows.length; i++) {
@@ -28,7 +30,7 @@ var showColumns = function(){
 }
 
 
-var addUser = function(username, gender, race, sexual_orientation, income, age, religion, city) {
+exports.addUser = function(username, gender, race, sexual_orientation, income, age, religion, city) {
   demoji_db.query('INSERT INTO users (username, gender, race, sexual_orientation, income, age, religion, city)'+
   'VALUES ('+username+', '+gender+', '+race+', '+sexual_orientation+', '+income+', '+age+', '+religion+', '+city+')', function(err, rows, fields){
 
@@ -42,7 +44,7 @@ var addUser = function(username, gender, race, sexual_orientation, income, age, 
   });
 }
 
-var insertImageData = function(url) {
+exports.insertImageData = function(url) {
   demoji_db.query('INSERT INTO pictures (url)'+
   'VALUES ('+url+')', function(err, rows, fields){
 
@@ -56,7 +58,7 @@ var insertImageData = function(url) {
   });
 }
 
-var insertReaction = function(userId, imageId, reaction) {
+exports.insertReaction = function(userId, imageId, reaction) {
 
   var reactionColumn = reaction.substring(1, reaction.length-1);
 
@@ -85,13 +87,10 @@ var insertReaction = function(userId, imageId, reaction) {
   });
 }
 
-insertReaction('3', '1', '"laughing"');
-
-//insertImageData('"kofi@gamil.com"');
-//addUser('"fredrick"', '"male"', '"black"', '"straight"', '"3983873942883"', '20', '"christian"', '"Accra"');
-
+/*
 demoji_db.end(function(err) {
   // The connection is terminated gracefully
   // Ensures all previously enqueued queries are still
   // before sending a COM_QUIT packet to the MySQL server.
 });
+*/

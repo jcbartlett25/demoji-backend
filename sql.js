@@ -18,12 +18,14 @@ demoji_db.connect(function(err){
 */
 
 
-demoji_db.query('SHOW COLUMNS FROM pictures', function(err, rows, fields){ 
+var showColumns = function(){
+  demoji_db.query('SHOW COLUMNS FROM pictures', function(err, rows, fields){ 
     
     for(var i=0; i<rows.length; i++) {
       console.log(rows[i].Field);
     }
-});
+  });
+}
 
 
 var addUser = function(username, gender, race, sexual_orientation, income, age, religion, city) {
@@ -53,6 +55,37 @@ var insertImageData = function(url) {
 
   });
 }
+
+var insertReaction = function(userId, imageId, reaction) {
+
+  var reactionColumn = reaction.substring(1, reaction.length-1);
+
+  demoji_db.query('INSERT INTO reactions (user_id, image_id, reaction)'+
+  'VALUES ('+userId+', '+imageId+', '+reaction+')', function(err, rows, fields){
+
+    if(err){
+      console.log(err);
+      return;
+    }
+
+    console.log('coolio');
+
+  });
+
+
+
+  demoji_db.query('UPDATE pictures SET '+reactionColumn+' = '+reactionColumn+' + 1 WHERE image_id = '+imageId, function(err, rows, fields) {
+
+    if(err){
+      console.log(err);
+      return;
+    }
+
+    console.log('updated');
+  });
+}
+
+insertReaction('3', '1', '"laughing"');
 
 //insertImageData('"kofi@gamil.com"');
 //addUser('"fredrick"', '"male"', '"black"', '"straight"', '"3983873942883"', '20', '"christian"', '"Accra"');

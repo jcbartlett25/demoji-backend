@@ -6,10 +6,11 @@ require('./routes')(app);
 
 app.get('/', function(req, res) {
   res.send('Hello Seattle\n');
+  res.end();
 });
 
-db.showColumns();
-db.getRelevantPicData('4','male');
+//db.showColumns();
+//db.getRelevantPicData('4','male');
 
 
 /** bodyParser.urlencoded(options)
@@ -31,7 +32,17 @@ app.post('/insertReaction', function (req, res) {
     var user = req.body.user;
     var reaction = req.body.reaction;
 
-    db.insertReaction(user, pic, reaction);
+    if (pic && user && reaction) {
+
+        db.insertReaction(user, pic, reaction);
+        res.send(true);
+        res.end();
+    }
+    else {
+
+        res.send(false); 
+        res.end();
+    }  
 });
 
 app.post('/createUser', function (req, res) {
@@ -45,14 +56,54 @@ app.post('/createUser', function (req, res) {
     var religion = req.body.religion;
     var city = req.body.city;
 
-    db.addUser(username, gender, race, sexual_orientation, income, age, religion, city);
+    console.log(req.body);
+
+    if (username && gender && race && sexual_orientation && income && age && religion && city) {
+
+        db.addUser(username, gender, race, sexual_orientation, income, age, religion, city);
+        res.send(true);
+        res.end();
+    }
+    else {
+
+        res.send(false); 
+        res.end();
+    } 
 });
 
 app.post('/newImage', function (req, res) {
 
     var url = req.body.url;
 
-    db.insertImageData(url);
+    if (url) {
+
+        db.insertImageData(url);
+        res.send(true);
+        res.end();
+    }
+    else {
+
+        res.send(false); 
+        res.end();
+    } 
+});
+
+// For this one, the url should look like hostname?picid=1
+app.get('/getRelevantPicData', function (req, res) {
+
+    var picId = req.query.picid;
+
+    if (picId) {
+
+        db.getRelevantPicData(picId);
+        res.send(true);
+        res.end();
+    }
+    else {
+
+        res.send(false); 
+        res.end();
+    }    
 });
 
 //db.insertReaction('7', '4', '"angry"');

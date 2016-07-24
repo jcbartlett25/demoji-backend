@@ -100,9 +100,7 @@ app.get('/getRelevantPicData', function (req, res) {
             console.log(data);
             res.send(data);
             res.end(); 
-        });
-
-        
+        });       
     }
     else {
 

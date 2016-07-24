@@ -94,142 +94,7 @@ exports.getRelevantPicData = function(imageId, callback) {
       console.log(err);
     }
 
-    var data = {  
-                 "gender":{  
-                    "male":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    },
-                    "female":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    },
-                    "trans_male":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    },
-                    "trans_female":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    },
-                    "nonbinary":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    }
-                 },
-                 "race":{  
-                    "black":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    },
-                    "hispanic":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    },
-                    "asian":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    },
-                    "white":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    }
-                 },
-                 "sexual_orientation":{  
-                    "straight":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    },
-                    "gay":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    },
-                    "other":{  
-                       "happy":0,
-                       "sad":0,
-                       "annoyed":0,
-                       "love":0,
-                       "angry":0,
-                       "laughing":0
-                    }
-                 },
-                 "income":{  
-                    "happy":0,
-                    "sad":0,
-                    "annoyed":0,
-                    "love":0,
-                    "angry":0,
-                    "laughing":0
-                 },
-                 "age":{  
-                    "happy":0,
-                    "sad":0,
-                    "annoyed":0,
-                    "love":0,
-                    "angry":0,
-                    "laughing":0
-                 },
-                 "religion":{  
-                    "happy":0,
-                    "sad":0,
-                    "annoyed":0,
-                    "love":0,
-                    "angry":0,
-                    "laughing":0
-                 },
-                 "city":{  
-                    "happy":0,
-                    "sad":0,
-                    "annoyed":0,
-                    "love":0,
-                    "angry":0,
-                    "laughing":0
-                 }
-              }
+    var data = newPicData();
 
     for(var i=0; i<rows.length; i++) {
 
@@ -245,39 +110,191 @@ exports.getRelevantPicData = function(imageId, callback) {
         data.sexual_orientation[rows[i].sexual_orientation][rows[i].reaction]++;
       }
 
-      //data.income[rows[i].income][reaction]++;
-      //data.age[rows[i].age][reaction]++;
-      //data.religion[rows[i].religion][reaction]++;
-      //data.city[rows[i].city][reaction]++;
-
-      /*
-    	if (demographic == rows[i].gender) {
-    		count++;
-    	} else if (demographic == rows[i].age) {
-    		count++;
-    	} else if (demographic == rows[i].race) {
-    		count++;
-    	} else if (demographic == rows[i].sexual_orientation) {
-    		count++;
-    	} else if (demographic == rows[i].religion) {
-    		count++;
-    	} else if (demographic == rows[i].city) {
-    		count++;
-    	} else if (demographic == rows[i].income) {
-    		count++;
-    	}
-      */ 
-    
+      if (data.age[rows[i].age] != null) {
+        data.age[rows[i].age][rows[i].reaction]++;
+      }
     }
 
     console.log(data);
     console.log('getRelevantPicData');
     
     callback(data);
-    //console.log(demoData + " " + count + " " + reaction);
     return data;
-});
+  });
 
+}
+
+var newPicData = function() {
+  return {  
+   "gender":{  
+      "male":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "female":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "trans_male":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "trans_female":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "nonbinary":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      }
+   },
+   "race":{  
+      "black":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "hispanic":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "asian":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "white":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      }
+   },
+   "sexual_orientation":{  
+      "straight":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "gay":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "other":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      }
+   },
+   "income":{  
+      "happy":0,
+      "sad":0,
+      "annoyed":0,
+      "love":0,
+      "angry":0,
+      "laughing":0
+   },
+   "age":{  
+      "10-20":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "20-30":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "30-40":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "40-50":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      },
+      "50+":{  
+         "happy":0,
+         "sad":0,
+         "annoyed":0,
+         "love":0,
+         "angry":0,
+         "laughing":0
+      }
+   },
+   "religion":{  
+      "happy":0,
+      "sad":0,
+      "annoyed":0,
+      "love":0,
+      "angry":0,
+      "laughing":0
+   },
+   "city":{  
+      "happy":0,
+      "sad":0,
+      "annoyed":0,
+      "love":0,
+      "angry":0,
+      "laughing":0
+   }
+  };
 }
 
 

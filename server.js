@@ -9,7 +9,7 @@ app.get('/', function(req, res) {
 });
 
 db.showColumns();
-db.getRelevantPicData('4','male');
+db.getRelevantPicData('1', 'black', 'happy');
 
 
 /** bodyParser.urlencoded(options)

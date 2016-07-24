@@ -39,7 +39,7 @@ exports.addUser = function(username, gender, race, sexual_orientation, income, a
       return;
     }
 
-    console.log('yay');
+    console.log('addUser');
 
   });
 }
@@ -53,7 +53,7 @@ exports.insertImageData = function(url) {
       return;
     }
 
-    console.log('wowzers');
+    console.log('insertImageData');
 
   });
 }
@@ -83,38 +83,81 @@ exports.insertReaction = function(userId, imageId, reaction) {
       return;
     }
 
-    console.log('updated');
+    console.log('insertReaction');
   });
 }
 
-exports.getRelevantPicData = function(imageId,demoData,reaction) {
+exports.getRelevantPicData = function(imageId,demoData,reactionData) {
 	demoji_db.query('SELECT reactions.image_id, users.id,users.username, reactions.reaction, users.city, users.sexual_orientation, users.race,users.age, users.gender, users.income, users.religion FROM reactions INNER JOIN users ON reactions.user_id = users.id WHERE image_id='+imageId, function(err, rows, fields) {
+    
     if(err){
       console.log(err);
     }
-    var count = 0;
+
+    if (demoData != "'age'") {
+        var demographic = demoData.substring(1, demoData.length-1);
+    }
+
+    var reaction = reactionData.substring(1, reactionData.length-1);
+
+    var data = {  
+                 "gender":{  
+                    "male":0,
+                    "female":0,
+                    "trans_male":0,
+                    "trans_female":0,
+                    "nonbinary":0
+                 },
+                 "race":{  
+                    "black":0,
+                    "hispanic":0,
+                    "asian":0,
+                    "white":0
+                 },
+                 "sexual_orientation":{  
+                    "straight":0,
+                    "gay":0,
+                    "other":0
+                 },
+                 "income":0,
+                 "age":0,
+                 "religion":0,
+                 "city":0
+              }
 
     for(var i=0; i<rows.length; i++) {
-    	if (demoData == rows[i].gender && reaction == rows[i].reaction) {
+
+      if (data.gender[rows[i].gender]) {
+        data.gender[rows[i].gender]++;
+      }
+
+      /*
+    	if (demographic == rows[i].gender) {
     		count++;
-    	} else if (demoData == rows[i].age) {
+    	} else if (demographic == rows[i].age) {
     		count++;
-    	} else if (demoData == rows[i].race) {
+    	} else if (demographic == rows[i].race) {
     		count++;
-    	} else if (demoData == rows[i].sexual_orientation) {
+    	} else if (demographic == rows[i].sexual_orientation) {
     		count++;
-    	} else if (demoData == rows[i].religion) {
+    	} else if (demographic == rows[i].religion) {
     		count++;
-    	} else if (demoData == rows[i].city) {
+    	} else if (demographic == rows[i].city) {
     		count++;
-    	} else if (demoData == rows[i].income) {
+    	} else if (demographic == rows[i].income) {
     		count++;
     	}
+      */
+
+
     
     }
-     console.log(demoData + " " + count + " " + reaction);
 
-    console.log('sweet');
+    console.log(data);
+    
+    //console.log(demoData + " " + count + " " + reaction);
+
+    console.log('getRelevantPicData');
 });
 
 }

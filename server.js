@@ -10,8 +10,8 @@ app.get('/', function(req, res) {
 });
 
 
-db.showColumns();
-db.getRelevantPicData('1', 'black', 'happy');
+//db.showColumns();
+db.getRelevantPicData('1', "'male'", "'happy'");
 
 
 /** bodyParser.urlencoded(options)

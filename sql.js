@@ -44,11 +44,15 @@ exports.addUser = function(username, gender, race, sexual_orientation, income, a
   });
 }
 
-exports.insertImageData = function(url) {
-  demoji_db.query('INSERT INTO pictures (url)'+
-  'VALUES ('+url+')', function(err, rows, fields){
+exports.insertImageData = function(url, flickrId) {
+  demoji_db.query('INSERT INTO pictures1 (url, flickr_id)'+
+  'VALUES ('+url+', '+flickrId+')', function(err, rows, fields){
 
-    if(err){
+    if(err && err.errno == 1062){
+      console.log('duplicate');
+      return;
+    }
+    else if(err){
       console.log(err);
       return;
     }
@@ -58,11 +62,22 @@ exports.insertImageData = function(url) {
   });
 }
 
-exports.insertReaction = function(userId, imageId, reaction) {
+exports.insertReaction = function(userId, flickrId, reaction) {
 
   var reactionColumn = reaction.substring(1, reaction.length-1);
 
-  demoji_db.query('INSERT INTO reactions (user_id, image_id, reaction)'+
+  demoji_db.query('INSERT INTO reactions1 (user_id, image_id, reaction)'+
+  'VALUES ('+userId+', '+flickrId+', '+reaction+')', function(err, rows, fields){
+
+    if(err){
+      console.log(err);
+      return;
+    }
+
+  });
+
+  /*
+  demoji_db.query('IF EXISTS (SELECT * FROM reactions WHERE user_id ='+userId+' AND image_id = '+imageId+') BEGIN UPDATE reactions SET reaction = '+reaction+' WHERE user_id ='+userId+' AND image_id = '+imageId+' END ELSE BEGIN INSERT INTO reactions (user_id, image_id, reaction)'+
   'VALUES ('+userId+', '+imageId+', '+reaction+')', function(err, rows, fields){
 
     if(err){
@@ -70,13 +85,11 @@ exports.insertReaction = function(userId, imageId, reaction) {
       return;
     }
 
-    console.log('coolio');
+    console.log('insertReaction');
+  }
+  */
 
-  });
-
-
-
-  demoji_db.query('UPDATE pictures SET '+reactionColumn+' = '+reactionColumn+' + 1 WHERE image_id = '+imageId, function(err, rows, fields) {
+  demoji_db.query('UPDATE pictures1 SET '+reactionColumn+' = '+reactionColumn+' + 1 WHERE image_id = '+flickrId, function(err, rows, fields) {
 
     if(err){
       console.log(err);
@@ -88,7 +101,7 @@ exports.insertReaction = function(userId, imageId, reaction) {
 }
 
 exports.getRelevantPicData = function(imageId, callback) {
-	demoji_db.query('SELECT reactions.image_id, users.id,users.username, reactions.reaction, users.city, users.sexual_orientation, users.race,users.age, users.gender, users.income, users.religion FROM reactions INNER JOIN users ON reactions.user_id = users.id WHERE image_id='+imageId, function(err, rows, fields) {
+	demoji_db.query('SELECT reactions1.image_id, users.id,users.username, reactions1.reaction, users.city, users.sexual_orientation, users.race,users.age, users.gender, users.income, users.religion FROM reactions1 INNER JOIN users ON reactions1.user_id = users.id WHERE image_id='+imageId, function(err, rows, fields) {
     
     if(err){
       console.log(err);

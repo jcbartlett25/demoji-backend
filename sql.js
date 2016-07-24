@@ -17,14 +17,14 @@ demoji_db.connect(function(err){
 });
 */
 
-/*
-demoji_db.query('SHOW COLUMNS FROM reactions', function(err, rows, fields){ 
+
+demoji_db.query('SHOW COLUMNS FROM pictures', function(err, rows, fields){ 
     
     for(var i=0; i<rows.length; i++) {
       console.log(rows[i].Field);
     }
 });
-*/
+
 
 var addUser = function(username, gender, race, sexual_orientation, income, age, religion, city) {
   demoji_db.query('INSERT INTO users (username, gender, race, sexual_orientation, income, age, religion, city)'+
@@ -40,6 +40,21 @@ var addUser = function(username, gender, race, sexual_orientation, income, age, 
   });
 }
 
+var insertImageData = function(url) {
+  demoji_db.query('INSERT INTO pictures (url)'+
+  'VALUES ('+url+')', function(err, rows, fields){
+
+    if(err){
+      console.log(err);
+      return;
+    }
+
+    console.log('wowzers');
+
+  });
+}
+
+//insertImageData('"kofi@gamil.com"');
 //addUser('"fredrick"', '"male"', '"black"', '"straight"', '"3983873942883"', '20', '"christian"', '"Accra"');
 
 demoji_db.end(function(err) {

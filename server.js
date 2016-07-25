@@ -72,14 +72,13 @@ app.post('/createUser', function (req, res) {
     } 
 });
 
-app.post('/newImage', function (req, res) {
+app.post('/newMedia', function (req, res) {
 
     var url = req.body.url;
-    var flickrId = req.body.flickrId;
 
     if (url) {
 
-        db.insertImageData(url, flickrId);
+        db.insertImageData(url);
         res.send(true);
         res.end();
     }
@@ -90,12 +89,12 @@ app.post('/newImage', function (req, res) {
     } 
 });
 
-// For this one, the url should look like hostname?picid=1
-app.get('/getRelevantPicData', function (req, res) {
+// For this one, the url should look like hostname?mediaid=1
+app.get('/getRelevantMediaData', function (req, res) {
 
-    var picId = req.query.picid;
+    var mediaId = req.query.mediaid;
 
-    if (picId) {
+    if (mediaId) {
 
         db.getRelevantPicData(picId, function(data) {
             console.log(data);
@@ -111,21 +110,8 @@ app.get('/getRelevantPicData', function (req, res) {
 });
 
 //db.insertReaction('7', '4', '"angry"');
-
+//db.addUser('"josh"', '"male"', '"black"', '"heterosexual"', '"$100,000+"', '"20-24"', '"christian"', '"ATL"')
 //db.insertImageData("'imthecoolest.org'", "'yfygiuf6ftyguytgfy'");
 app.listen(3001);
-
-var users = ['17','18','20','22','24','25','26','27','28'];
-var pics = ['7','1','4'];
-var reactions = ["'happy'", "'sad'", "'annoyed'", "'love'", "'angry'", "'laughing'"];
-
-for (var i=1; i<100; i++) {
-
-    var x = Math.floor((Math.random() * 9));
-    var y = Math.floor((Math.random() * 3));
-    var z = Math.floor((Math.random() * 6));
-
-    db.insertReaction(users[x], pics[y], reactions[z]);
-}
 
 console.log('Listening on port 3001...');

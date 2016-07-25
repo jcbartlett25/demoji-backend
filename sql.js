@@ -1,24 +1,13 @@
 var exports = module.exports = {};
 
-var mysql      = require('mysql');
-// First you need to create a connection to the db
+var mysql = require('mysql');
+
 var demoji_db = mysql.createConnection({
   host     : '159.203.240.126',
   user     : 'remote',
   password : 'hack2040',
-  database : 'sys'
+  database : 'demoji'
 });
-
-/*
-demoji_db.connect(function(err){
-  if(err){
-    console.log('Error connecting to Db');
-    return;
-  }
-  console.log('Connection established we got db up');
-});
-*/
-
 
 exports.showColumns = function(){
   demoji_db.query('SHOW COLUMNS FROM users', function(err, rows, fields){ 
@@ -44,9 +33,9 @@ exports.addUser = function(username, gender, race, sexual_orientation, income, a
   });
 }
 
-exports.insertImageData = function(url, flickrId) {
-  demoji_db.query('INSERT INTO pictures1 (url, flickr_id)'+
-  'VALUES ('+url+', '+flickrId+')', function(err, rows, fields){
+exports.insertMediaData = function(url) {
+  demoji_db.query('INSERT INTO media (url)'+
+  'VALUES ('+url+')', function(err, rows, fields){
 
     if(err && err.errno == 1062){
       console.log('duplicate');
@@ -57,17 +46,18 @@ exports.insertImageData = function(url, flickrId) {
       return;
     }
 
-    console.log('insertImageData');
+    console.log('insertMediaData');
 
   });
 }
 
-exports.insertReaction = function(userId, flickrId, reaction) {
+// TODO: Update a reaction if it exists in the table
+exports.insertReaction = function(userId, itemId, reaction) {
 
   var reactionColumn = reaction.substring(1, reaction.length-1);
 
-  demoji_db.query('INSERT INTO reactions1 (user_id, image_id, reaction)'+
-  'VALUES ('+userId+', '+flickrId+', '+reaction+')', function(err, rows, fields){
+  demoji_db.query('INSERT INTO reactions (user_id, item_id, reaction)'+
+  'VALUES ('+userId+', '+itemId+', '+reaction+')', function(err, rows, fields){
 
     if(err){
       console.log(err);
@@ -76,20 +66,7 @@ exports.insertReaction = function(userId, flickrId, reaction) {
 
   });
 
-  /*
-  demoji_db.query('IF EXISTS (SELECT * FROM reactions WHERE user_id ='+userId+' AND image_id = '+imageId+') BEGIN UPDATE reactions SET reaction = '+reaction+' WHERE user_id ='+userId+' AND image_id = '+imageId+' END ELSE BEGIN INSERT INTO reactions (user_id, image_id, reaction)'+
-  'VALUES ('+userId+', '+imageId+', '+reaction+')', function(err, rows, fields){
-
-    if(err){
-      console.log(err);
-      return;
-    }
-
-    console.log('insertReaction');
-  }
-  */
-
-  demoji_db.query('UPDATE pictures1 SET '+reactionColumn+' = '+reactionColumn+' + 1 WHERE image_id = '+flickrId, function(err, rows, fields) {
+  demoji_db.query('UPDATE media SET '+reactionColumn+' = '+reactionColumn+' + 1 WHERE item_id = '+itemId, function(err, rows, fields) {
 
     if(err){
       console.log(err);
@@ -100,14 +77,14 @@ exports.insertReaction = function(userId, flickrId, reaction) {
   });
 }
 
-exports.getRelevantPicData = function(imageId, callback) {
-	demoji_db.query('SELECT reactions1.image_id, users.id,users.username, reactions1.reaction, users.city, users.sexual_orientation, users.race,users.age, users.gender, users.income, users.religion FROM reactions1 INNER JOIN users ON reactions1.user_id = users.id WHERE image_id='+imageId, function(err, rows, fields) {
+exports.getRelevantMediaData = function(itemId, callback) {
+	demoji_db.query('SELECT reactions.item_id, users.id, users.username, reactions.reaction, users.city, users.sexual_orientation, users.race,users.age, users.gender, users.income, users.religion FROM reactions INNER JOIN users ON reactions.user_id = users.id WHERE item_id='+itemId, function(err, rows, fields) {
     
     if(err){
       console.log(err);
     }
 
-    var data = newPicData();
+    var data = newMediaData();
 
     for(var i=0; i<rows.length; i++) {
 
@@ -129,7 +106,7 @@ exports.getRelevantPicData = function(imageId, callback) {
     }
 
     console.log(data);
-    console.log('getRelevantPicData');
+    console.log('getRelevantMediaData');
     
     callback(data);
     return data;
@@ -137,7 +114,7 @@ exports.getRelevantPicData = function(imageId, callback) {
 
 }
 
-var newPicData = function() {
+var newMediaData = function() {
   return {  
    "gender":{  
       "male":{  

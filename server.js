@@ -5,29 +5,18 @@ var db = require('./sql');
 require('./routes')(app);
 
 app.get('/', function(req, res) {
-  res.send('Hello Seattle\n');
+  res.send('Ahhhh I see you made it to the backend of the sentimoji application');
   res.end();
 });
 
-
-//db.showColumns();
-//db.getRelevantPicData('5');
-
-
-/** bodyParser.urlencoded(options)
- * Parses the text as URL encoded data (which is how browsers tend to send form data from regular forms set to POST)
- * and exposes the resulting object (containing the keys and values) on req.body
- */
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-/**bodyParser.json(options)
- * Parses the text as JSON and exposes the resulting object on req.body.
- */
 app.use(bodyParser.json());
 
-app.post('/insertReaction', function (req, res) {
+// user reaction endpoint
+app.post('/newReaction', function (req, res) {
 
     var pic = req.body.pic;
     var user = req.body.user;
@@ -35,17 +24,20 @@ app.post('/insertReaction', function (req, res) {
 
     if (pic && user && reaction) {
 
-        db.insertReaction(user, pic, reaction);
-        res.send(true);
-        res.end();
+        db.newReaction(user, pic, reaction, function(status) {
+            res.status(status);
+            res.send("REACT");
+            res.end();
+        });
     }
     else {
 
-        res.send(false); 
+        res.status(400).send({ error: "cmon fam, your request wasn't formatted properly try again" });
         res.end();
     }  
 });
 
+// user creation endpoint
 app.post('/createUser', function (req, res) {
 
     var username = req.body.username;
@@ -61,34 +53,40 @@ app.post('/createUser', function (req, res) {
 
     if (username && gender && race && sexual_orientation && income && age && religion && city) {
 
-        db.addUser(username, gender, race, sexual_orientation, income, age, religion, city);
-        res.send(true);
-        res.end();
+        db.createUser(username, gender, race, sexual_orientation, income, age, religion, city, function(status) {
+            res.status(status).send("we made a connection ;)");
+            res.end();
+        });
     }
     else {
 
-        res.send(false); 
+        res.status(400).send({ error: "cmon fam, your request wasn't formatted properly try again" }); 
         res.end();
     } 
 });
 
+// media creation endpoint
 app.post('/newMedia', function (req, res) {
 
     var url = req.body.url;
 
     if (url) {
 
-        db.insertImageData(url);
-        res.send(true);
-        res.end();
+        db.newMediaData(url, function(status) {
+
+            res.status(status).send("we made a connection ;)");
+            res.end(); 
+        });
+        
     }
     else {
 
-        res.send(false); 
+        res.status(400).send({ error: "cmon fam, your request wasn't formatted properly try again" }); 
         res.end();
     } 
 });
 
+// Data viewing endpoint
 // For this one, the url should look like hostname?mediaid=1
 app.get('/getRelevantMediaData', function (req, res) {
 
@@ -96,17 +94,29 @@ app.get('/getRelevantMediaData', function (req, res) {
 
     if (mediaId) {
 
-        db.getRelevantPicData(picId, function(data) {
-            console.log(data);
+        db.getRelevantMediaData(picId, function(data) {
+
+            if (data == 503) {
+                res.status(503);
+                res.send("we made a connection ;)");
+                res.end();
+                return;
+            }
             res.send(data);
             res.end(); 
         });       
     }
     else {
 
-        res.send(false); 
+        res.status(400).send({ error: "cmon fam, your request wasn't formatted properly try again" }); 
         res.end();
     }    
+});
+
+app.get('/testingUserColumn', function(req, res) {
+    db.showColumns();
+    res.send('check the console for success');
+    res.end();
 });
 
 //db.insertReaction('7', '4', '"angry"');

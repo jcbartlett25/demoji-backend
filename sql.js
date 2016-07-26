@@ -9,6 +9,11 @@ var demoji_db = mysql.createConnection({
   database : 'demoji'
 });
 
+/**
+ * Used to see the columns in a table
+ * @param {String} column name
+ * @return {null} nothing
+ */
 exports.showColumns = function(){
   demoji_db.query('SHOW COLUMNS FROM users', function(err, rows, fields){ 
     
@@ -18,50 +23,79 @@ exports.showColumns = function(){
   });
 }
 
-
-exports.addUser = function(username, gender, race, sexual_orientation, income, age, religion, city) {
+/**
+ * Creates a new user with all of their demographics
+ * @param {Strings} Self explanatory
+ * @return status code
+ */
+exports.createUser = function(username, gender, race, sexual_orientation, income, age, religion, city, callback) {
   demoji_db.query('INSERT INTO users (username, gender, race, sexual_orientation, income, age, religion, city)'+
   'VALUES ('+username+', '+gender+', '+race+', '+sexual_orientation+', '+income+', '+age+', '+religion+', '+city+')', function(err, rows, fields){
 
+    var status;
+
     if(err){
       console.log(err);
-      return;
+      status = 503;
     }
 
     console.log('addUser');
-
+    status = 200;
+    callback(status);
+    return status;
   });
 }
 
-exports.insertMediaData = function(url) {
+/**
+ * Creates a new media item in the database
+ * @param {Strings} url of the media item
+ * @return status code
+ */
+exports.newMediaData = function(url, callback) {
   demoji_db.query('INSERT INTO media (url)'+
   'VALUES ('+url+')', function(err, rows, fields){
 
+    var status;
+
     if(err && err.errno == 1062){
       console.log('duplicate');
-      return;
+      status = 502;
     }
     else if(err){
       console.log(err);
-      return;
+      status = 503;
+    }
+    else {
+      status = 200;
     }
 
     console.log('insertMediaData');
-
+    
+    callback(status);
+    return status;
   });
 }
 
 // TODO: Update a reaction if it exists in the table
-exports.insertReaction = function(userId, itemId, reaction) {
+/**
+ * Creates a new reaction in the database
+ * @param {String} id of the user
+ * @param {String} id of the item
+ * @param {String} user's reaction
+ * @return status code
+ */
+exports.newReaction = function(userId, itemId, reaction, callback) {
 
   var reactionColumn = reaction.substring(1, reaction.length-1);
 
   demoji_db.query('INSERT INTO reactions (user_id, item_id, reaction)'+
   'VALUES ('+userId+', '+itemId+', '+reaction+')', function(err, rows, fields){
 
+    var status;
+
     if(err){
       console.log(err);
-      return;
+      status = 503;
     }
 
   });
@@ -70,18 +104,30 @@ exports.insertReaction = function(userId, itemId, reaction) {
 
     if(err){
       console.log(err);
-      return;
+      status = 503;
+    }
+    else {
+      status = 200;
     }
 
     console.log('insertReaction');
+    callback(status);
+    return status;
   });
 }
 
+/**
+ * Gets all the reaction data for a given media item
+ * @param {String} id of the item
+ * @param {String} callback function
+ * @return status code
+ */
 exports.getRelevantMediaData = function(itemId, callback) {
 	demoji_db.query('SELECT reactions.item_id, users.id, users.username, reactions.reaction, users.city, users.sexual_orientation, users.race,users.age, users.gender, users.income, users.religion FROM reactions INNER JOIN users ON reactions.user_id = users.id WHERE item_id='+itemId, function(err, rows, fields) {
     
     if(err){
       console.log(err);
+      return 503;
     }
 
     var data = newMediaData();
